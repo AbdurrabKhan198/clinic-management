@@ -1,0 +1,74 @@
+{% extends 'home/base.html' %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Add New Patient</h2>
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="mb-3">
+      {{ form.name.label_tag }} {{ form.name }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.phone.label_tag }} {{ form.phone }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.age.label_tag }} {{ form.age }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.height.label_tag }} {{ form.height }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.weight.label_tag }} {{ form.weight }}
+    </div>
+    <div class="mb-3">
+      {{ form.BP.label_tag }} {{ form.BP }}
+    </div>
+
+    <div class="mb-3">
+      <label for="id_gender">Gender:</label>
+      <select name="gender" id="id_gender" class="form-select">
+        <option value="male" {% if form.gender.value == 'male' %}selected{% endif %}>Male</option>
+        <option value="female" {% if form.gender.value == 'female' %}selected{% endif %}>Female</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      {{ form.address.label_tag }}
+      <input type="text" name="address" id="id_address" class="form-control" value="{{ form.address.value|default:'' }}">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Forward to Doctor</button>
+  </form>
+
+  <hr>
+  <h3>Forwarded Patients</h3>
+  <table class="table table-bordered mt-3">
+    <thead>
+      <tr>
+        <th>ID</th><th>Name</th><th>Phone</th><th>Age</th><th>Gender</th><th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for patient in patients %}
+      <tr>
+        <td>{{ patient.custom_id }}</td>
+        <td>{{ patient.name }}</td>
+        <td>{{ patient.phone }}</td>
+        <td>{{ patient.age }}</td>
+        <td>{{ patient.gender }}</td>
+        <td>
+          <a href="{% url 'add_prescription' patient.id %}" class="btn btn-info">Add Prescription</a>
+          <a href="{% url 'mark_done' patient.id %}" class="btn btn-success">Mark Done</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6">No forwarded patients yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

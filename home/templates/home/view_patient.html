@@ -1,0 +1,295 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ user.clinic_address|default:"Ortho clinic manik moti complex, Hazratganj, Lucknow" }}</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <style>
+    /* Print styles */
+    @media print {
+      .no-print {
+        display: none;
+      }
+      body {
+        -webkit-print-color-adjust: exact;
+      }
+    }
+
+    @import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");
+    body {
+      font-family: "Inter", sans-serif;
+      color: #0b3b71;
+      background-color: white;
+      margin: 0;
+      padding: 0;
+    }
+    .form-control-custom {
+      background-color: transparent;
+      border: none;
+      padding: 0.15rem 0.25rem;
+      min-width: 100px;
+    }
+    .form-control-custom.border-bottom {
+      border-bottom: 1px solid #0b3b71;
+      display: inline-block;
+      min-width: 120px;
+    }
+    .form-label-custom {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    .circle-img img {
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .dashed-border-right {
+      border-right: 1px dashed #0b3b71;
+    }
+
+    /* Editable inputs hidden by default */
+    .edit-input {
+      display: none;
+      border: 1px solid #0b3b71;
+      border-radius: 4px;
+      padding: 0.15rem 0.25rem;
+      min-width: 120px;
+      font-size: 0.75rem;
+      color: #0b3b71;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="position-relative container py-4" style="max-width: 900px;">
+    {% if user.name %}
+    <img
+      src="{% static 'home/images/header.png' %}"
+      alt="ZOSPITAL Logo"
+      class="zospital-logo"
+      width="100%"
+      height="140"
+    />
+    {% endif %}
+
+    <div class="d-flex flex-column flex-sm-row align-items-center gap-3 position-relative" style="z-index: 1;">
+      <div class="circle-img">
+        {% if user.profile_pic %}
+          <img
+            src="{{ user.profile_pic.url }}"
+            alt="{{ user.full_name }}"
+            width="112"
+            height="112"
+          />
+        {% else %}
+          <img
+            src="{% static 'home/images/doctor.png' %}"
+            alt="Default Doctor"
+            width="112"
+            height="112"
+          />
+        {% endif %}
+      </div>
+      <div class="flex-grow-1">
+        <h1 class="fw-semibold mb-1" style="color:#0B3B71; font-size: 1.125rem;">
+          <span class="view-text">{{ user.name|default:"Dr. Shoeb Arif Khan" }}</span>
+          <input type="text" name="doctor_name" value="{{ user.name }}" class="edit-input" />
+        </h1>
+        <p class="mb-1" style="font-size: 0.75rem; color:#0B3B71;">
+          <span class="view-text">{{ user.qualification|default:"MBBS, MS-Ortho" }}</span>
+          <input type="text" name="doctor_qualification" value="{{ user.qualification }}" class="edit-input" />
+        </p>
+        <p class="mb-1" style="font-size: 0.75rem; color:#0B3B71;">
+          <span class="view-text">{{ user.clinic_address|default:"Ortho clinic manik moti complex, Hazratganj, Lucknow" }}</span>
+          <input type="text" name="doctor_clinic_address" value="{{ user.clinic_address }}" class="edit-input" />
+        </p>
+        <p class="mb-0" style="font-size: 0.75rem; color:#0B3B71;">
+          <span class="view-text">{{ user.phone|default:"+91 72757 01426" }}</span>
+          <input type="text" name="doctor_phone" value="{{ user.phone }}" class="edit-input" />
+        </p>
+      </div>
+      <div class="ms-auto">
+        <img
+          src="{% static 'home/images/zospital_logo.png' %}"
+          alt="ZOSPITAL Logo"
+          class="zospital-logo"
+          width="120"
+          height="40"
+        />
+      </div>
+    </div>
+
+    <form method="post" action="{% url 'edit_patient' patient.id %}" id="editForm">
+      {% csrf_token %}
+
+      <div class="mt-4" style="color:#0B3B71; font-size: 0.75rem;">
+        <div class="d-flex flex-wrap align-items-center form-row-gap">
+          <div class="d-flex align-items-center form-label-custom-sm">
+            <span style="min-width: 40px;">Pt. ID</span>
+            <span class="form-control-custom view-text">{{ patient.custom_id }}</span>
+            <input type="text" name="custom_id" value="{{ patient.custom_id }}" class="edit-input" />
+          </div>
+          <div class="d-flex align-items-center form-label-custom-sm ms-auto">
+            <span style="min-width: 40px;">Date</span>
+            <span class="form-control-custom border-bottom view-text">{{ patient.date|default:"Today" }}</span>
+            <input type="date" name="date" value="{{ patient.date|date:'Y-m-d' }}" class="edit-input" />
+          </div>
+        </div>
+
+        <div class="d-flex flex-wrap align-items-center form-row-gap mt-3">
+          <div class="d-flex align-items-center form-label-custom-sm" style="min-width: 120px;">
+            <span style="min-width: 40px;">Name :&nbsp;&nbsp;</span>
+            <span class="form-control-custom border-bottom view-text">&nbsp;{{ patient.name }}</span>
+            <input type="text" name="name" value="{{ patient.name }}" class="edit-input" />
+          </div>
+          <div class="d-flex align-items-center form-label-custom-sm" style="min-width: 120px;">
+            <span style="min-width: 40px;">&nbsp;&nbsp;Address : </span>
+            <span class="form-control-custom border-bottom view-text">&nbsp;&nbsp;{{ patient.address }}</span>
+            <input type="text" name="address" value="{{ patient.address }}" class="edit-input" />
+          </div>
+          
+          <div class="d-flex align-items-center form-label-custom-sm ms-auto" style="min-width: 120px;">
+            <span style="min-width: 40px;">Contact :</span>
+            <span class="form-control-custom view-text">{{ patient.phone }}</span>
+            <input type="text" name="phone" value="{{ patient.phone }}" class="edit-input" />
+          </div>
+        </div>
+
+        <div class="d-flex flex-wrap align-items-center form-row-gap mt-3">
+          <div class="d-flex align-items-center form-label-custom-sm" style="min-width: 120px;">
+            <span style="min-width: 40px;">Age</span>
+            <span class="form-control-custom border-bottom view-text">{{ patient.age }}</span>
+            <input type="number" name="age" value="{{ patient.age }}" class="edit-input" />
+          </div>
+          <div class="d-flex align-items-center form-label-custom-sm" style="min-width: 120px;">
+            <span style="min-width: 40px;">Sex</span>
+            <span class="form-control-custom border-bottom view-text">{{ patient.gender }}</span>
+            <select name="gender" class="edit-input">
+              <option value="Male" {% if patient.gender == "Male" %}selected{% endif %}>Male</option>
+              <option value="Female" {% if patient.gender == "Female" %}selected{% endif %}>Female</option>
+              <option value="Other" {% if patient.gender == "Other" %}selected{% endif %}>Other</option>
+            </select>
+          </div>
+          <div class="d-flex align-items-center form-label-custom-sm" style="min-width: 120px;">
+            <span style="min-width: 40px;">Weight</span>
+            <span class="form-control-custom border-bottom view-text">{{ patient.weight }}</span>
+            <input type="text" name="weight" value="{{ patient.weight }}" class="edit-input" />
+          </div>
+          <div class="d-flex align-items-center form-label-custom-sm" style="min-width: 120px;">
+            <span style="min-width: 40px;">Height</span>
+            <span class="form-control-custom border-bottom view-text">{{ patient.height }}</span>
+            <input type="text" name="height" value="{{ patient.height }}" class="edit-input" />
+          </div>
+          <div class="d-flex align-items-center form-label-custom-sm ms-auto" style="min-width: 120px;">
+            <span style="min-width: 40px;">BP</span>
+            <span class="form-control-custom border-bottom view-text">{{ patient.BP }}</span>
+            <input type="text" name="BP" value="{{ patient.BP }}" class="edit-input" />
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="d-flex mt-4" style="gap: 1.5rem;">
+          <div class="d-flex flex-column dashed-border-right pe-3" style="min-width: 33%; gap: 3rem;">
+            <div>
+              <div class="form-label-custom">Investigation</div>
+              <span class="form-control-custom border-bottom view-text">{{ patient.investigation }}</span>
+              <textarea name="investigation" class="edit-input" rows="3">{{ patient.investigation }}</textarea>
+            </div>
+            <div>
+              <div class="form-label-custom">Advice</div>
+              <span class="form-control-custom border-bottom view-text">{{ patient.advice }}</span>
+              <textarea name="advice" class="edit-input" rows="3">{{ patient.advice }}</textarea>
+            </div>
+          </div>
+          <div class="d-flex flex-column" style="min-width: 67%; gap: 1.5rem;">
+            <div>
+              <div class="form-label-custom">Chief Complaint</div>
+              <span class="form-control-custom border-bottom view-text">{{ patient.chief_complaints }}</span>
+              <textarea name="chief_complaints" class="edit-input" rows="2">{{ patient.chief_complaints }}</textarea>
+            </div>
+            <div>
+              <div class="form-label-custom">Examination Findings</div>
+              <span class="form-control-custom border-bottom view-text">{{ patient.examination_findings }}</span>
+              <textarea name="examination_findings" class="edit-input" rows="2">{{ patient.examination_findings }}</textarea>
+            </div>
+            <div>
+              <div class="form-label-custom">Diagnosis</div>
+              <span class="form-control-custom border-bottom view-text">{{ patient.diagnosis }}</span>
+              <textarea name="diagnosis" class="edit-input" rows="2">{{ patient.diagnosis }}</textarea>
+            </div>
+            <div>
+              <div class="form-label-custom">Treatment Plan</div>
+              <span class="form-control-custom border-bottom view-text">{{ patient.treatment_plan }}</span>
+              <textarea name="treatment_plan" class="edit-input" rows="2">{{ patient.treatment_plan }}</textarea>
+            </div>
+
+            <div>
+              <div class="form-label-custom">Medications</div>
+              <div class="form-control-custom border-bottom view-text">
+                {% if patient.medication_entries.exists or patient.medications %}
+                  <ul class="mb-0" style="padding-left: 1rem;">
+                    {% for med in patient.medication_entries.all %}
+                      <li>{{ med.medicine_name }} ({{ med.get_dosage_display }})</li>
+                    {% empty %}
+                      <li>No medications prescribed.</li>
+                    {% endfor %}
+                    {% if patient.medications %}
+                      {% for custom_med in patient.medications.splitlines %}
+                        {% if custom_med %}
+                          <li>{{ custom_med }}</li>
+                        {% endif %}
+                      {% endfor %}
+                    {% endif %}
+                  </ul>
+                {% else %}
+                  No medications prescribed.
+                {% endif %}
+              </div>
+              <textarea name="medications" class="edit-input" rows="3">{% if patient.medications %}{{ patient.medications }}{% endif %}</textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-footer-bg text-center py-1" style="font-size: 0.75rem;">
+        www.zospital.com
+      </div>
+
+      <!-- Print and Edit Section -->
+      <div class="no-print mt-4 text-center mb-4">
+        <a href="{% url 'existing_patients' %}" class="btn btn-secondary">Back</a>
+        <button type="button" onclick="window.print()" class="btn btn-primary">Print</button>
+        <button type="button" id="editBtn" class="btn btn-warning ms-2">Edit</button>
+        <button type="submit" id="saveBtn" class="btn btn-success ms-2 d-none">Save</button>
+      </div>
+
+    </form>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const editBtn = document.getElementById('editBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const editInputs = document.querySelectorAll('.edit-input');
+    const viewTexts = document.querySelectorAll('.view-text');
+
+    editBtn.addEventListener('click', () => {
+      // Toggle display: hide spans, show inputs
+      viewTexts.forEach(el => el.style.display = 'none');
+      editInputs.forEach(el => el.style.display = 'inline-block');
+
+      editBtn.classList.add('d-none');
+      saveBtn.classList.remove('d-none');
+    });
+  </script>
+
+</body>
+</html>
