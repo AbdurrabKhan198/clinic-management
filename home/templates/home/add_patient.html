@@ -16,7 +16,7 @@
     <div class="mb-3">
       {{ form.age.label_tag }} {{ form.age }}
     </div>
-
+    
     <div class="mb-3">
       {{ form.height.label_tag }} {{ form.height }}
     </div>
@@ -33,6 +33,7 @@
       <select name="gender" id="id_gender" class="form-select">
         <option value="male" {% if form.gender.value == 'male' %}selected{% endif %}>Male</option>
         <option value="female" {% if form.gender.value == 'female' %}selected{% endif %}>Female</option>
+	<option value="female" {% if form.gender.value == 'Other' %}selected{% endif %}>Other</option>
       </select>
     </div>
 
@@ -58,7 +59,7 @@
         <td>{{ patient.custom_id }}</td>
         <td>{{ patient.name }}</td>
         <td>{{ patient.phone }}</td>
-        <td>{{ patient.age }}</td>
+        <td>{{ patient.age }} </td>
         <td>{{ patient.gender }}</td>
         <td>
           <a href="{% url 'add_prescription' patient.id %}" class="btn btn-info">Add Prescription</a>

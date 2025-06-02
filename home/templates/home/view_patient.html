@@ -70,7 +70,7 @@
   <div class="position-relative container py-4" style="max-width: 900px;">
     {% if user.name %}
     <img
-      src="{% static 'home/images/header.png' %}"
+      src="{% static 'images/header.png' %}"
       alt="ZOSPITAL Logo"
       class="zospital-logo"
       width="100%"
@@ -89,12 +89,17 @@
           />
         {% else %}
           <img
-            src="{% static 'home/images/doctor.png' %}"
+            src="{% static 'images/doctor.png' %}"
             alt="Default Doctor"
             width="112"
             height="112"
           />
         {% endif %}
+	 <p class="mb-1" style="font-size: 0.75rem; color:#0B3B71;">
+          <span class="view-text">Clinic Add : {{ user.clinic_address|default:"Ortho clinic manik moti complex, Hazratganj, Lucknow" }}</span>
+          <input type="text" name="doctor_clinic_address" value="{{ user.clinic_address }}" class="edit-input" />
+        </p>
+	
       </div>
       <div class="flex-grow-1">
         <h1 class="fw-semibold mb-1" style="color:#0B3B71; font-size: 1.125rem;">
@@ -116,7 +121,7 @@
       </div>
       <div class="ms-auto">
         <img
-          src="{% static 'home/images/zospital_logo.png' %}"
+          src="{% static 'images/zospital_logo.png' %}"
           alt="ZOSPITAL Logo"
           class="zospital-logo"
           width="120"
@@ -124,14 +129,15 @@
         />
       </div>
     </div>
-
+	<hr>
     <form method="post" action="{% url 'edit_patient' patient.id %}" id="editForm">
       {% csrf_token %}
 
       <div class="mt-4" style="color:#0B3B71; font-size: 0.75rem;">
         <div class="d-flex flex-wrap align-items-center form-row-gap">
           <div class="d-flex align-items-center form-label-custom-sm">
-            <span style="min-width: 40px;">Pt. ID</span>
+         <hr> 
+           <span style="min-width: 40px;">Pt. ID</span>
             <span class="form-control-custom view-text">{{ patient.custom_id }}</span>
             <input type="text" name="custom_id" value="{{ patient.custom_id }}" class="edit-input" />
           </div>
@@ -164,7 +170,7 @@
         <div class="d-flex flex-wrap align-items-center form-row-gap mt-3">
           <div class="d-flex align-items-center form-label-custom-sm" style="min-width: 120px;">
             <span style="min-width: 40px;">Age</span>
-            <span class="form-control-custom border-bottom view-text">{{ patient.age }}</span>
+            <span class="form-control-custom border-bottom view-text">{{ patient.age }} years </span>
             <input type="number" name="age" value="{{ patient.age }}" class="edit-input" />
           </div>
           <div class="d-flex align-items-center form-label-custom-sm" style="min-width: 120px;">
@@ -178,17 +184,17 @@
           </div>
           <div class="d-flex align-items-center form-label-custom-sm" style="min-width: 120px;">
             <span style="min-width: 40px;">Weight</span>
-            <span class="form-control-custom border-bottom view-text">{{ patient.weight }}</span>
+            <span class="form-control-custom border-bottom view-text">{{ patient.weight }} kgs</span>
             <input type="text" name="weight" value="{{ patient.weight }}" class="edit-input" />
           </div>
           <div class="d-flex align-items-center form-label-custom-sm" style="min-width: 120px;">
-            <span style="min-width: 40px;">Height</span>
-            <span class="form-control-custom border-bottom view-text">{{ patient.height }}</span>
+            <span style="min-width: 40px;">Height in ft</span>
+            <span class="form-control-custom border-bottom view-text">{{ patient.height }} ft</span>
             <input type="text" name="height" value="{{ patient.height }}" class="edit-input" />
           </div>
           <div class="d-flex align-items-center form-label-custom-sm ms-auto" style="min-width: 120px;">
             <span style="min-width: 40px;">BP</span>
-            <span class="form-control-custom border-bottom view-text">{{ patient.BP }}</span>
+            <span class="form-control-custom border-bottom view-text">{{ patient.BP }} mmHg</span>
             <input type="text" name="BP" value="{{ patient.BP }}" class="edit-input" />
           </div>
         </div>
