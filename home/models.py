@@ -67,6 +67,23 @@ class Patient(models.Model):
     def __str__(self):
         return self.name
 
+class CommonEntry(models.Model):
+    FIELD_CHOICES = [
+        ('chief_complaints', 'Chief Complaints'),
+        ('investigation', 'Investigation'),
+        ('examination_findings', 'Examination Findings'),
+        ('diagnosis', 'Diagnosis'),
+        ('treatment_plan', 'Treatment Plan'),
+        ('advice', 'Advice'),
+        ('medication', 'Medication'),
+    ]
+
+    field_type = models.CharField(max_length=50, choices=FIELD_CHOICES)
+    value = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return f"{self.field_type}: {self.value}"
+
 
 # Structured medications with dosage per patient
 class MedicationEntry(models.Model):

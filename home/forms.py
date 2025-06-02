@@ -5,8 +5,17 @@ from .models import Patient, MedicationEntry
 class PatientForm(forms.ModelForm):
     class Meta:
         model = Patient
-        fields = ['name', 'phone', 'age', 'gender', 'address','height','weight','BP']
-
+        fields = ['name', 'phone', 'age', 'height', 'weight', 'BP', 'gender', 'address']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control form-control-lg'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control form-control-lg'}),
+            'age': forms.NumberInput(attrs={'class': 'form-control form-control-lg'}),
+            'height': forms.NumberInput(attrs={'class': 'form-control form-control-lg', 'step': '0.01'}),  # step add kiya
+            'weight': forms.NumberInput(attrs={'class': 'form-control form-control-lg'}),
+            'BP': forms.TextInput(attrs={'class': 'form-control form-control-lg'}),
+            'gender': forms.Select(attrs={'class': 'form-select form-select-lg'}),
+            'address': forms.TextInput(attrs={'class': 'form-control form-control-lg'}),
+        }
 
 class PrescriptionForm(forms.ModelForm):
     class Meta:

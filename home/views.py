@@ -10,7 +10,10 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import CustomUser  # custom user model import karo
 from django.core.files.storage import FileSystemStorage
-
+from .models import CommonEntry
+from django.views.decorators.http import require_POST
+from django.http import JsonResponse
+from django.views.decorators.http import require_GET
 
 
 def signup_view(request):
@@ -158,15 +161,49 @@ def patient_detail_and_prescription(request, patient_id):
     return render(request, 'home/patient_prescription.html', {'patient': patient, 'form': form})
 
 
+@require_POST
+def save_common_entry(request):
+    field_type = request.POST.get('field_type')
+    value = request.POST.get('value')
+
+    if field_type and value:
+        CommonEntry.objects.get_or_create(field_type=field_type, value=value)
+
+    return JsonResponse({'status': 'success'})
+
+
+from django.db.models import Q
 
 @login_required
 def existing_patients(request):
-    # Temporarily ignore group permissions
-    patients = Patient.objects.filter(status='done', created_by=request.user)
+    query = request.GET.get('q', '')  # Get search query from GET params
+    if query:
+        # Filter patients by name containing the query (case-insensitive)
+        patients = Patient.objects.filter(
+            Q(status='done'), 
+            Q(created_by=request.user),
+            Q(name__icontains=query)
+        )
+    else:
+        # No search query, show all done patients for user
+        patients = Patient.objects.filter(status='done', created_by=request.user)
+
     return render(request, 'home/existing_patients.html', {'patients': patients})
 
 
 
+@require_GET
+def autocomplete_common_entries(request):
+    field_type = request.GET.get('field_type')
+    query = request.GET.get('q', '').strip()
+
+    if not field_type:
+        return JsonResponse({'results': []})
+
+    entries = CommonEntry.objects.filter(field_type=field_type, value__icontains=query).values_list('value', flat=True).distinct()[:10]
+    results = list(entries)
+
+    return JsonResponse({'results': results})
 
 @login_required
 def view_patient(request, patient_id):

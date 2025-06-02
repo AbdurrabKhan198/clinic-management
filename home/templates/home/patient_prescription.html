@@ -1,39 +1,157 @@
 {% extends 'home/base.html' %}
 {% block content %}
-<div class="container mt-4">
-  <h2>Add Prescription for {{ patient.name }}</h2>
 
-  <form method="post">
+<style>
+  body {
+    background: #e3f2fd; /* soft pastel blue */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .prescription-form-card {
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 15px;
+    padding: 2.5rem 3rem;
+    box-shadow:
+      0 8px 24px rgba(0, 123, 255, 0.15),
+      0 16px 48px rgba(0, 123, 255, 0.1),
+      0 24px 60px rgba(0, 123, 255, 0.07);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 123, 255, 0.2);
+  }
+  h2 {
+    font-weight: 700;
+    color: #0d6efd;
+    border-left: 6px solid #0d6efd;
+    padding-left: 0.75rem;
+    margin-bottom: 2rem;
+    font-size: 2.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  h2 i {
+    font-size: 2.5rem;
+  }
+  label.form-label {
+    font-weight: 600;
+    color: #212529cc;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+  }
+  textarea.form-control,
+  input.form-control,
+  select.form-select {
+    font-size: 1.1rem;
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.12);
+    border: 1.5px solid #0d6efd;
+    border-radius: 10px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  textarea.form-control:focus,
+  input.form-control:focus,
+  select.form-select:focus {
+    border-color: #0a58ca;
+    box-shadow: 0 0 15px rgba(13, 110, 253, 0.5);
+    outline: none;
+  }
+  #selected-medications-container > div {
+    background: #f0f8ff;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.1);
+  }
+  button.btn-success {
+    background: linear-gradient(135deg, #0d6efd 0%, #3a8dff 100%);
+    border: none;
+    font-size: 1.25rem;
+    font-weight: 700;
+    border-radius: 12px;
+    padding: 0.9rem 2rem;
+    box-shadow: 0 6px 20px rgba(13, 110, 253, 0.35);
+    transition: background 0.4s ease;
+  }
+  button.btn-success:hover {
+    background: linear-gradient(135deg, #0a58ca 0%, #2a6fcc 100%);
+    box-shadow: 0 8px 25px rgba(10, 88, 202, 0.5);
+  }
+  .form-text {
+    font-size: 0.85rem;
+    color: #0d6efdcc;
+  }
+  /* Autocomplete suggestions box */
+  .autocomplete-suggestions {
+    position: absolute;
+    z-index: 9999;
+    background: white;
+    border: 1px solid #ddd;
+    max-height: 150px;
+    overflow-y: auto;
+    width: 100%;
+    display: none;
+    cursor: pointer;
+  }
+  .autocomplete-suggestion-item {
+    padding: 8px 12px;
+  }
+  .autocomplete-suggestion-item:hover {
+    background-color: #e9ecef;
+  }
+  .position-relative {
+    position: relative;
+  }
+  button.btn-outline-primary {
+    font-size: 0.9rem;
+    padding: 0.4rem 1rem;
+    border-radius: 8px;
+  }
+</style>
+
+<div class="container mt-5 mb-5">
+  <h2>
+    <i class="bi bi-journal-medical"></i>
+    Add Prescription for <span class="text-secondary">{{ patient.name }}</span>
+  </h2>
+
+  <form method="post" class="prescription-form-card">
     {% csrf_token %}
 
-    <div class="mb-3">
+    <div class="mb-4 position-relative">
       <label for="id_chief_complaints" class="form-label">Chief Complaints</label>
-      <textarea name="chief_complaints" id="id_chief_complaints" class="form-control" rows="3">{{ form.chief_complaints.value }}</textarea>
+      <textarea name="chief_complaints" id="id_chief_complaints" class="form-control autocomplete-field" data-field-type="chief_complaints" rows="3" placeholder="Enter chief complaints">{{ form.chief_complaints.value }}</textarea>
+      <div class="autocomplete-suggestions" id="suggestions-chief_complaints"></div>
+      <button type="button" class="btn btn-outline-primary mt-1" onclick="saveEntry('chief_complaints', 'id_chief_complaints')">Save Chief Complaint</button>
     </div>
+<div class="mb-4 position-relative">
+  <label for="id_investigation" class="form-label">Investigation</label>
+  <textarea name="investigation" id="id_investigation" class="form-control autocomplete-field" data-field-type="investigation" rows="3" placeholder="Enter investigation details">{{ form.investigation.value }}</textarea>
+  <div class="autocomplete-suggestions" id="suggestions-investigation"></div>
+  <button type="button" class="btn btn-outline-primary mt-1" onclick="saveEntry('investigation', 'id_investigation')">Save Investigation</button>
+</div>
 
-    <div class="mb-3">
-      <label for="id_investigation" class="form-label">Investigation</label>
-      <textarea name="investigation" id="id_investigation" class="form-control" rows="3">{{ form.investigation.value }}</textarea>
-    </div>
+<div class="mb-4 position-relative">
+  <label for="id_examination_findings" class="form-label">Examination Findings</label>
+  <textarea name="examination_findings" id="id_examination_findings" class="form-control autocomplete-field" data-field-type="examination_findings" rows="3" placeholder="Enter examination findings">{{ form.examination_findings.value }}</textarea>
+  <div class="autocomplete-suggestions" id="suggestions-examination_findings"></div>
+  <button type="button" class="btn btn-outline-primary mt-1" onclick="saveEntry('examination_findings', 'id_examination_findings')">Save Examination Findings</button>
+</div>
 
-    <div class="mb-3">
-      <label for="id_examination_findings" class="form-label">Examination Findings</label>
-      <textarea name="examination_findings" id="id_examination_findings" class="form-control" rows="3">{{ form.examination_findings.value }}</textarea>
-    </div>
-
-    <div class="mb-3">
+    <div class="mb-4 position-relative">
       <label for="id_diagnosis" class="form-label">Diagnosis</label>
-      <textarea name="diagnosis" id="id_diagnosis" class="form-control" rows="3">{{ form.diagnosis.value }}</textarea>
+      <textarea name="diagnosis" id="id_diagnosis" class="form-control autocomplete-field" data-field-type="diagnosis" rows="3" placeholder="Enter diagnosis">{{ form.diagnosis.value }}</textarea>
+      <div class="autocomplete-suggestions" id="suggestions-diagnosis"></div>
+      <button type="button" class="btn btn-outline-primary mt-1" onclick="saveEntry('diagnosis', 'id_diagnosis')">Save Diagnosis</button>
     </div>
 
-    <div class="mb-3">
+    <div class="mb-4 position-relative">
       <label for="id_treatment_plan" class="form-label">Treatment Plan</label>
-      <textarea name="treatment_plan" id="id_treatment_plan" class="form-control" rows="3">{{ form.treatment_plan.value }}</textarea>
+      <textarea name="treatment_plan" id="id_treatment_plan" class="form-control autocomplete-field" data-field-type="treatment_plan" rows="3" placeholder="Enter treatment plan">{{ form.treatment_plan.value }}</textarea>
+      <div class="autocomplete-suggestions" id="suggestions-treatment_plan"></div>
+      <button type="button" class="btn btn-outline-primary mt-1" onclick="saveEntry('treatment_plan', 'id_treatment_plan')">Save Treatment Plan</button>
     </div>
 
-    <div class="mb-3">
+    <div class="mb-4">
       <label for="id_medications_select" class="form-label">Select Medications</label>
-      <select multiple class="form-control" id="id_medications_select" onchange="updateSelectedMedications()">
+      <select multiple class="form-select" id="id_medications_select" onchange="updateSelectedMedications()" aria-describedby="medicationsHelp">
         <option>ACEROZ-P TAB</option>
         <option>ACEROZ SP TAB</option>
         <option>AZX PLUS CAP</option>
@@ -53,75 +171,141 @@
         <option>ZELCAL SACHET</option>
         <option>ZECOBAL P TAB</option>
       </select>
+      <div id="medicationsHelp" class="form-text">Hold Ctrl (Cmd on Mac) to select multiple medicines</div>
     </div>
 
-    <!-- Selected medicines with dosage dropdowns -->
-    <div id="selected-medications-container" class="mb-3">
-      <!-- JS will dynamically add selected meds and dosage dropdowns here -->
-    </div>
+    <div id="selected-medications-container" class="mb-4"></div>
 
-    <!-- Custom Medications -->
-    <div class="mb-3">
+    <div class="mb-4 position-relative">
       <label for="id_medications" class="form-label">Custom Medications (if not in list)</label>
-      <textarea name="custom_medications" id="id_medications" class="form-control" rows="3">{{ form.medications.value }}</textarea>
+      <textarea name="custom_medications" id="id_medications" class="form-control autocomplete-field" data-field-type="custom_medications" rows="3" placeholder="Type custom medications here...">{{ form.medications.value }}</textarea>
+      <div class="autocomplete-suggestions" id="suggestions-custom_medications"></div>
+      <button type="button" class="btn btn-outline-primary mt-1" onclick="saveEntry('custom_medications', 'id_medications')">Save Custom Medication</button>
     </div>
 
-    <!-- Other fields -->
-    <div class="mb-3">
+    <div class="mb-4 position-relative">
       <label for="id_advice" class="form-label">Advice</label>
-      <textarea name="advice" id="id_advice" class="form-control" rows="3">{{ form.advice.value }}</textarea>
+      <textarea name="advice" id="id_advice" class="form-control autocomplete-field" data-field-type="advice" rows="3" placeholder="Enter advice or notes here...">{{ form.advice.value }}</textarea>
+      <div class="autocomplete-suggestions" id="suggestions-advice"></div>
+      <button type="button" class="btn btn-outline-primary mt-1" onclick="saveEntry('advice', 'id_advice')">Save Advice</button>
     </div>
 
-    <div class="mb-3">
-      <label for="id_next_visit_date" class="form-label">Next Visit Date</label>
-      <input type="date" name="next_visit_date" id="id_next_visit_date" class="form-control" value="{{ form.next_visit_date.value }}">
-    </div>
+    <button type="submit" class="btn btn-success">Save Prescription</button>
 
-    <button type="submit" class="btn btn-success">Save & Mark Done</button>
   </form>
 </div>
 
 <script>
-  function updateSelectedMedications() {
-    const select = document.getElementById('id_medications_select');
-    const container = document.getElementById('selected-medications-container');
+  // Autocomplete logic
+  document.querySelectorAll('.autocomplete-field').forEach(textarea => {
+    const fieldType = textarea.getAttribute('data-field-type');
+    const suggestionBox = document.getElementById('suggestions-' + fieldType);
 
-    // Get all selected options
-    const selectedMeds = Array.from(select.selectedOptions).map(opt => opt.value);
+    textarea.addEventListener('input', function() {
+      const query = this.value.trim();
+      if (query.length < 2) {
+        suggestionBox.style.display = 'none';
+        return;
+      }
+      fetch(`/autocomplete-common-entries/?field_type=${fieldType}&q=` + encodeURIComponent(query))
+        .then(response => response.json())
+        .then(data => {
+          suggestionBox.innerHTML = '';
+          if (data.results.length > 0) {
+            data.results.forEach(item => {
+              const div = document.createElement('div');
+              div.className = 'autocomplete-suggestion-item';
+              div.textContent = item;
+              div.addEventListener('click', () => {
+                textarea.value = item;
+                suggestionBox.style.display = 'none';
+              });
+              suggestionBox.appendChild(div);
+            });
+            suggestionBox.style.display = 'block';
+          } else {
+            suggestionBox.style.display = 'none';
+          }
+        });
+    });
 
-    // Clear container
-    container.innerHTML = '';
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!suggestionBox.contains(e.target) && e.target !== textarea) {
+        suggestionBox.style.display = 'none';
+      }
+    });
+  });
 
-    selectedMeds.forEach((med, index) => {
-      // Safe ID for elements
-      const safeId = med.replace(/\s+/g, '_').replace(/[^\w]/g, '');
-
-      // Create div for this medicine and dosage select
-      const medDiv = document.createElement('div');
-      medDiv.className = 'mb-2 d-flex align-items-center gap-3';
-
-      medDiv.innerHTML = `
-        <div style="flex:1;">
-          <label class="form-label" for="dosage_${safeId}">${med}</label>
-        </div>
-        <div style="flex:1;">
-          <select name="dosages_${index}" id="dosage_${safeId}" class="form-select" required>
-            <option value="once">Once a day</option>
-            <option value="twice">Twice a day</option>
-            <option value="thrice">Three times a day</option>
-          </select>
-        </div>
-        <input type="hidden" name="medications_${index}" value="${med}">
-      `;
-
-      container.appendChild(medDiv);
+  function saveEntry(fieldType, textareaId) {
+    const value = document.getElementById(textareaId).value.trim();
+    if (!value) {
+      alert('Please enter some text before saving.');
+      return;
+    }
+    fetch('/save-common-entry/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-CSRFToken': getCookie('csrftoken'),
+      },
+      body: new URLSearchParams({
+        'field_type': fieldType,
+        'value': value
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if(data.status === 'success'){
+        alert('Saved successfully!');
+      } else {
+        alert('Error saving entry.');
+      }
     });
   }
 
-  // Initialize on page load (in case some meds are pre-selected)
-  document.addEventListener('DOMContentLoaded', () => {
-    updateSelectedMedications();
-  });
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i=0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length+1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length+1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  // Medication select and dosage dropdown
+  const medicationsSelect = document.getElementById('id_medications_select');
+  const selectedMedicationsContainer = document.getElementById('selected-medications-container');
+
+  function updateSelectedMedications() {
+    selectedMedicationsContainer.innerHTML = '';
+    const selectedOptions = Array.from(medicationsSelect.selectedOptions);
+    selectedOptions.forEach(med => {
+      const medDiv = document.createElement('div');
+      medDiv.className = 'mb-3';
+      medDiv.innerHTML = `
+        <label class="form-label fw-semibold">${med.value}</label>
+        <select name="medication_dosage_${med.value.replace(/\s+/g, '_')}" class="form-select" required>
+          <option value="">Select dosage frequency</option>
+          <option value="once a day">Once a day</option>
+          <option value="twice a day">Twice a day</option>
+          <option value="thrice a day">Thrice a day</option>
+        </select>
+      `;
+      selectedMedicationsContainer.appendChild(medDiv);
+    });
+  }
+
+  medicationsSelect.addEventListener('change', updateSelectedMedications);
+  // Initial load call
+  updateSelectedMedications();
+
 </script>
 
 {% endblock %}

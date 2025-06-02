@@ -19,6 +19,9 @@ urlpatterns = [
     #to view patient 
     path('patient/<int:patient_id>/', views.view_patient, name='view_patient'),
     path('patient/<int:patient_id>/edit/', views.edit_patient, name='edit_patient'),
+    path('save-common-entry/', views.save_common_entry, name='save_common_entry'),
+    path('autocomplete-common-entries/', views.autocomplete_common_entries, name='autocomplete_common_entries'),
+
 
 ]
 
