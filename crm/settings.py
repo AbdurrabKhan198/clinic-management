@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-#lf8(9$c@$#t)5c_*m31y63-2p%k0szp!*n#1vcnw!c884c&_&
 DEBUG = True
 
 # ALLOWED_HOSTS = ['143.110.182.37','www.zospital.in','zospital.in']
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['143.110.182.37','www.zospital.in','zospital.in']
 
 
 # Application definition
