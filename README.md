@@ -336,22 +336,6 @@ ALLOWED_HOSTS=your-domain.com,www.your-domain.com
 - **Mobile App**: React Native mobile application
 - **API Development**: RESTful API for third-party integrations
 
-### Technical Improvements
-
-- **PostgreSQL Migration**: Production database upgrade
-- **Redis Caching**: Performance optimization
-- **Celery Integration**: Background task processing
-- **Docker Containerization**: Easy deployment
-- **CI/CD Pipeline**: Automated testing and deployment
-- **API Documentation**: Swagger/OpenAPI integration
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
 
 ## 📋 Testing
 
@@ -373,20 +357,6 @@ coverage report
 ## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 📞 Support
-
-For support and questions:
-
-- **Email**: [Your Email]
-- **Website**: [www.zospital.in](http://www.zospital.in)
-- **Issues**: Create an issue in the GitHub repository
-
-## 🙏 Acknowledgments
-
-- Django Framework for the robust backend
-- Bootstrap for responsive UI components
-- The open-source community for various packages and tools
 
 ---
 
