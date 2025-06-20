@@ -141,11 +141,18 @@
             <span class="form-control-custom view-text">{{ patient.custom_id }}</span>
             <input type="text" name="custom_id" value="{{ patient.custom_id }}" class="edit-input" />
           </div>
-          <div class="d-flex align-items-center form-label-custom-sm ms-auto">
-            <span style="min-width: 40px;">Date</span>
-            <span class="form-control-custom border-bottom view-text">{{ patient.date|default:"Today" }}</span>
-            <input type="date" name="date" value="{{ patient.date|date:'Y-m-d' }}" class="edit-input" />
-          </div>
+          
+          
+        
+
+        {% now "Y-m-d" as today_date %}
+        <div class="d-flex align-items-center form-label-custom-sm ms-auto">
+          <span style="min-width: 40px;">Date</span>
+          <span class="form-control-custom border-bottom view-text">
+            {{ patient.date|default:today_date }}
+          </span>
+        <input type="date" name="date" value="{{ patient.date|date:'Y-m-d' }}" class="edit-input" />
+        </div>
         </div>
 
         <div class="d-flex flex-wrap align-items-center form-row-gap mt-3">
@@ -155,7 +162,7 @@
             <input type="text" name="name" value="{{ patient.name }}" class="edit-input" />
           </div>
           <div class="d-flex align-items-center form-label-custom-sm" style="min-width: 120px;">
-            <span style="min-width: 40px;">&nbsp;&nbsp;Address : </span>
+            <span style="min-width: 40px;">Address : </span>
             <span class="form-control-custom border-bottom view-text">&nbsp;&nbsp;{{ patient.address }}</span>
             <input type="text" name="address" value="{{ patient.address }}" class="edit-input" />
           </div>
@@ -169,12 +176,12 @@
 
         <div class="d-flex flex-wrap align-items-center form-row-gap mt-3">
           <div class="d-flex align-items-center form-label-custom-sm" style="min-width: 120px;">
-            <span style="min-width: 40px;">Age</span>
-            <span class="form-control-custom border-bottom view-text">{{ patient.age }} years </span>
+            <span style="min-width: 40px;">Age :</span>
+            <span class="form-control-custom border-bottom view-text">{{ patient.age }} yr </span>
             <input type="number" name="age" value="{{ patient.age }}" class="edit-input" />
           </div>
           <div class="d-flex align-items-center form-label-custom-sm" style="min-width: 120px;">
-            <span style="min-width: 40px;">Sex</span>
+            <span style="min-width: 40px;">Sex :</span>
             <span class="form-control-custom border-bottom view-text">{{ patient.gender }}</span>
             <select name="gender" class="edit-input">
               <option value="Male" {% if patient.gender == "Male" %}selected{% endif %}>Male</option>
@@ -183,19 +190,19 @@
             </select>
           </div>
           <div class="d-flex align-items-center form-label-custom-sm" style="min-width: 120px;">
-            <span style="min-width: 40px;">Weight</span>
-            <span class="form-control-custom border-bottom view-text">{{ patient.weight }} kgs</span>
+            <span style="min-width: 40px;">Weight :</span>
+            <span class="form-control-custom border-bottom view-text">{{ patient.weight }} kg</span>
             <input type="text" name="weight" value="{{ patient.weight }}" class="edit-input" />
           </div>
           <div class="d-flex align-items-center form-label-custom-sm" style="min-width: 120px;">
-            <span style="min-width: 40px;">Height in ft</span>
-            <span class="form-control-custom border-bottom view-text">{{ patient.height }} ft</span>
-            <input type="text" name="height" value="{{ patient.height }}" class="edit-input" />
+            <span style="min-width: 40px;">Height :</span>
+            <span class="form-control-custom border-bottom view-text">{{ patient.height }} &nbsp;cm</span>
+            <input type="text" name="height"  value="{{ patient.height }}" class="edit-input" />
           </div>
           <div class="d-flex align-items-center form-label-custom-sm ms-auto" style="min-width: 120px;">
-            <span style="min-width: 40px;">BP</span>
-            <span class="form-control-custom border-bottom view-text">{{ patient.BP }} mmHg</span>
-            <input type="text" name="BP" value="{{ patient.BP }}" class="edit-input" />
+            <span style="min-width: 40px;">BP :</span>
+            <span class="form-control-custom border-bottom view-text">{{ patient.BP }} &nbsp;mmHg</span>
+            <input type="text"  name="BP" value="{{ patient.BP }}" class="edit-input" />
           </div>
         </div>
 
@@ -244,7 +251,7 @@
                     {% for med in patient.medication_entries.all %}
                       <li>{{ med.medicine_name }} ({{ med.get_dosage_display }})</li>
                     {% empty %}
-                      <li>No medications prescribed.</li>
+                      {% comment %} <li>No medications prescribed.</li> {% endcomment %}
                     {% endfor %}
                     {% if patient.medications %}
                       {% for custom_med in patient.medications.splitlines %}
@@ -255,7 +262,7 @@
                     {% endif %}
                   </ul>
                 {% else %}
-                  No medications prescribed.
+                  {% comment %} No medications prescribed. {% endcomment %}
                 {% endif %}
               </div>
               <textarea name="medications" class="edit-input" rows="3">{% if patient.medications %}{{ patient.medications }}{% endif %}</textarea>

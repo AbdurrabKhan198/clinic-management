@@ -10,8 +10,8 @@ class PatientForm(forms.ModelForm):
             'name': forms.TextInput(attrs={'class': 'form-control form-control-lg'}),
             'phone': forms.TextInput(attrs={'class': 'form-control form-control-lg'}),
             'age': forms.NumberInput(attrs={'class': 'form-control form-control-lg'}),
-            'height': forms.NumberInput(attrs={'class': 'form-control form-control-lg', 'step': '0.01'}),  # step add kiya
-            'weight': forms.NumberInput(attrs={'class': 'form-control form-control-lg'}),
+            'height': forms.NumberInput(attrs={'class': 'form-control form-control-lg', 'step': '0.01', 'placeholder': 'Enter height in cm'}),  # step add kiya
+            'weight': forms.NumberInput(attrs={'class': 'form-control form-control-lg', 'placeholder': 'Enter weight in kgs'}),
             'BP': forms.TextInput(attrs={'class': 'form-control form-control-lg'}),
             'gender': forms.Select(attrs={'class': 'form-select form-select-lg'}),
             'address': forms.TextInput(attrs={'class': 'form-control form-control-lg'}),
